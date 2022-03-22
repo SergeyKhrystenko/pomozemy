@@ -1,0 +1,11 @@
+version: '3.1'
+
+services:
+  pomozemy_db:
+    image: postgres
+    ports:
+      - "45555:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: django_pomozemy

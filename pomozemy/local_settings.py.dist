@@ -1,0 +1,13 @@
+# Database
+# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': '<HOST>',
+        'NAME': '<DB_NAME>',
+        'USER': '<USER>',
+        'PASSWORD': '<PASS>',
+        'PORT': '<PORT>',
+    }
+}
