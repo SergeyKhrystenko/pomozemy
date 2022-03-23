@@ -19,9 +19,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i7cfkqf4fs_+a5g+n7vrz%$m6$7!m7odxjs-j0mx%mo3-)=plq'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -118,7 +115,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 try:
-    from pomozemy.local_settings import DATABASES
+    from pomozemy.local_settings import DATABASES, SECRET_KEY
 except ModuleNotFoundError:
     print('File local_settings.py not found!')
     exit(0)
