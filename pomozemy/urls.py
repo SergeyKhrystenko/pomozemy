@@ -16,7 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+import static_page.views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', static_page.views.Index.as_view(), name='index'),
     path('p/', include('static_page.urls')),
+    path('accounts/', include('accounts.urls')),
+    path('fundraiser/', include('fundraiser.urls')),
 ]

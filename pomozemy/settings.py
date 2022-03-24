@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'simple_history',
     'static_page',
+    'accounts',
+    'fundraiser',
 ]
 
 MIDDLEWARE = [

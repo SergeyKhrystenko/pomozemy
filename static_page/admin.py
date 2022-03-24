@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from static_page.models import StaticPage
+
+
+class StaticPageAdmin(admin.ModelAdmin):
+    readonly_fields = ('slug',)
+
+
+admin.site.register(StaticPage, StaticPageAdmin)

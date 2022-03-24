@@ -3,5 +3,5 @@ from django.urls import path
 import static_page.views
 
 urlpatterns = [
-    path('<slug:slug>/', static_page.views.ShowPage.as_view()),
+    path('<slug:slug>/', static_page.views.ShowPage.as_view(), name='static_page'),
 ]
