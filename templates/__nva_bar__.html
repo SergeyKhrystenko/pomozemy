@@ -1,34 +1,86 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Pomożemy</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+    <div class="container">
+        <a class="navbar-brand me-2" href="{% url 'index' %}">
+            Pomożemy
+        </a>
+
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-mdb-toggle="collapse"
+                data-mdb-target="#navbarButtonsExample"
+                aria-controls="navbarButtonsExample"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <i class="fas fa-bars"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+
+        <div class="collapse navbar-collapse" id="navbarButtonsExample">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link" href="{% url 'fundraiser_list' %}">Lista zbiórek</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Wyloguj się</a>
+                {% if categories %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarCategories"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Kategorie
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarCategories">
+                            {% for category in categories %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'fundraiser_category_list' category.slug %}">
+                                        {{ category.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Zaloguj się</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">Rejestracja</a>
+                {% endif %}
+                {% if static_pages %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarCategories"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Informacje
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarCategories">
+                            {% for page in static_pages %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'static_page' page.slug %}">
+                                        {{ page.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </li>
                 {% endif %}
             </ul>
+
+            <div class="d-flex align-items-center">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% if user.is_authenticated %}
+                        <span class="navbar-text">
+                            ({{ user.username }})
+                        </span>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'fundraiser_my_list' %}">Moje zbiórki</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Wyloguj się</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Zaloguj się</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Rejestracja</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </div>
 </nav>

@@ -29,8 +29,10 @@ class TestViews:
     def test_register_success(self, user):
         client = Client()
         data = {
-            'username': 'test2',
+            'email': 'test2@test.pl',
             'password': '123456',
+            'first_name': 'first_name',
+            'last_name': 'last_name',
         }
         response = client.post(reverse('register'), data)
         assert response.status_code == 302
@@ -40,7 +42,7 @@ class TestViews:
     def test_register_error(self, user):
         client = Client()
         data = {
-            'username': '',
+            'email': '',
             'password': '',
         }
         response = client.post(reverse('register'), data)

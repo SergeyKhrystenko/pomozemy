@@ -31,7 +31,7 @@ class LoginView(UserPassesTestMixin, View):
 class LogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
-        return redirect('login')
+        return redirect('index')
 
 
 class UserCreate(UserPassesTestMixin, CreateView):
@@ -44,8 +44,8 @@ class UserCreate(UserPassesTestMixin, CreateView):
 
     def form_valid(self, form):
         form.save()
-        username = form.cleaned_data.get('username')
+        email = form.cleaned_data.get('email')
         password = form.cleaned_data.get('password')
-        authenticated_user = authenticate(self.request, username=username, password=password)
+        authenticated_user = authenticate(self.request, username=email, password=password)
         login(self.request, authenticated_user)
         return redirect(self.success_url)

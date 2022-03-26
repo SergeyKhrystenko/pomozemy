@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView, DetailView
 from django.shortcuts import get_object_or_404
 
-from static_page.models import StaticPage
+from static_pages.models import StaticPage
 
 
 class ShowPage(DetailView):

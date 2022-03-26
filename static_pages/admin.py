@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from static_page.models import StaticPage
+from static_pages.models import StaticPage
 
 
 class StaticPageAdmin(admin.ModelAdmin):
