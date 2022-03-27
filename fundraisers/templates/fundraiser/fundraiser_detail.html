@@ -1,11 +1,12 @@
 {% extends '__base__.html' %}
+{% load crispy_forms_tags %}
 {% block title %}{{ object.name }}{% endblock %}
 {% block content %}
     <div class="row my-4">
         <h1>{{ object.name }}</h1>
         <div class="row">Kategoria: {{ object.category.name }}</div>
         <div class="row">Autor: {{ object.owner.first_name }} {{ object.owner.last_name }}</div>
-        <div class="row">Cel: {{ object.purpose }}zł</div>
+        <div class="row">Zebrano: {{ object.transaction_sum }}zł / {{ object.purpose }}zł</div>
         <div class="row">Głosy:
             <div class="row">
                 <div class="col-1">
@@ -13,7 +14,8 @@
                         {% csrf_token %}
                         <input type="hidden" name="vote" value="up">
                         <button type="submit" class="btn">
-                            <span class="badge bg-success"><i class="bi bi-emoji-laughing-fill"></i> {{ object.votes_positive }}</span>
+                            <span class="badge bg-success"><i
+                                    class="bi bi-emoji-laughing-fill"></i> {{ object.votes_positive }}</span>
                         </button>
                     </form>
                 </div>
@@ -22,7 +24,8 @@
                         {% csrf_token %}
                         <input type="hidden" name="vote" value="down">
                         <button type="submit" class="btn">
-                            <span class="badge bg-danger"><i class="bi bi-emoji-frown-fill"></i> {{ object.votes_negative }}</span>
+                            <span class="badge bg-danger"><i
+                                    class="bi bi-emoji-frown-fill"></i> {{ object.votes_negative }}</span>
                         </button>
                     </form>
                 </div>
@@ -32,29 +35,53 @@
 
         <div class="card text-dark">
             <div class="card-body p-4">
+                <h4 class="mb-0">Transakcje</h4>
+            </div>
+            <div class="card-body p-4">
+                {% crispy transaction_form %}
+            </div>
+            <hr class="my-0"/>
+            {% for transaction in object.transaction_set.all %}
+                <div class="card-body p-4">
+                    <div class="d-flex flex-start">
+                        <div>
+                            <h6 class="fw-bold mb-1">
+                                {{ transaction.get_user_name }}
+                            </h6>
+                            <div class="d-flex align-items-center mb-3">
+                                <p class="mb-0">
+                                    {{ transaction.created_at }}
+                                </p>
+                            </div>
+                            <p class="mb-0">
+                                Amount: {{ transaction.amount }}zł<br>
+                                {{ transaction.comment }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% if not forloop.last %}
+                    <hr class="my-0"/>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="my-4"></div>
+
+        <div class="card text-dark">
+            <div class="card-body p-4">
                 <h4 class="mb-0">Komentarze</h4>
             </div>
             <div class="card-body p-4">
-                <form action="{% url 'fundraiser_comment_add' object.id %}" method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="comment">Dodaj komentarz</label>
-                        <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Dodaj</button>
-                </form>
+                {% crispy comment_form %}
             </div>
-            <hr class="my-0" />
+            <hr class="my-0"/>
             {% for comment in object.comment_set.all %}
                 <div class="card-body p-4">
                     <div class="d-flex flex-start">
                         <div>
                             <h6 class="fw-bold mb-1">
-                                {% if comment.user %}
-                                    {{ commnet.user.first_name }} {{ comment.user.last_name }}
-                                {% else %}
-                                    Anonim
-                                {% endif %}
+                                {{ comment.get_user_name }}
                             </h6>
                             <div class="d-flex align-items-center mb-3">
                                 <p class="mb-0">
@@ -68,7 +95,7 @@
                     </div>
                 </div>
                 {% if not forloop.last %}
-                    <hr class="my-0" />
+                    <hr class="my-0"/>
                 {% endif %}
             {% endfor %}
         </div>

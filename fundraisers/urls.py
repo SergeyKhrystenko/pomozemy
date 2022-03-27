@@ -12,4 +12,5 @@ urlpatterns = [
     path('update/<int:pk>/', views.FundraiserUpdateView.as_view(), name='fundraiser_update'),
     path('<int:fundraiser_id>/comment/add/', views.CommentAddView.as_view(), name='fundraiser_comment_add'),
     path('<int:fundraiser_id>/vote/', views.FundraiserVoteView.as_view(), name='fundraiser_vote'),
+    path('<int:fundraiser_id>/transaction/add/', views.TransactionAddView.as_view(), name='fundraiser_transaction_add'),
 ]

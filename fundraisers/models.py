@@ -12,7 +12,7 @@ class Category(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'({self.pk}){self.name}'
+        return self.name
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -42,7 +42,7 @@ class Fundraiser(models.Model):
         super(Fundraiser, self).save(*args, **kwargs)
 
     def transaction_sum(self):
-        return self.transaction_set.all().aggregate(Sum('cost'))['cost__sum'] or 0
+        return self.transaction_set.all().aggregate(Sum('amount'))['amount__sum'] or 0
 
     def upvote(self):
         self.votes_positive += 1
@@ -56,9 +56,15 @@ class Fundraiser(models.Model):
 class Transaction(models.Model):
     fundraiser = models.ForeignKey(Fundraiser, on_delete=models.CASCADE)
     comment = models.CharField(max_length=500, blank=True)
-    cost = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+
+    def get_user_name(self):
+        if self.user:
+            return self.user.get_full_name()
+        return 'Anonymous'
 
 
 class Comment(models.Model):
@@ -67,3 +73,8 @@ class Comment(models.Model):
     fundraiser = models.ForeignKey(Fundraiser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_user_name(self):
+        if self.user:
+            return self.user.get_full_name()
+        return 'Anonymous'

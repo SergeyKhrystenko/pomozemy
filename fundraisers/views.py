@@ -7,7 +7,7 @@ from datetime import datetime
 from django.views import View
 
 from fundraisers.models import Fundraiser, Category
-from fundraisers.forms import FundraiserForm
+from fundraisers.forms import FundraiserForm, CommentAddForm, TransactionForm
 
 
 class BaseFundraiserListView(ListView):
@@ -46,6 +46,12 @@ class FundraiserDetailView(DetailView):
     model = Fundraiser
     template_name = 'fundraiser/fundraiser_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentAddForm(fundraiser=self.object)
+        context['transaction_form'] = TransactionForm(fundraiser=self.object)
+        return context
+
 
 class FundraiserCreateView(LoginRequiredMixin, CreateView):
     model = Fundraiser
@@ -72,12 +78,13 @@ class FundraiserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class CommentAddView(View):
     def post(self, request, fundraiser_id):
-
-        fundraiser = Fundraiser.objects.get(pk=fundraiser_id)
-        fundraiser.comment_set.create(
-            user=None if request.user.is_anonymous else request.user,
-            message=request.POST['comment']
-        )
+        fundraiser = get_object_or_404(Fundraiser, pk=fundraiser_id)
+        form = CommentAddForm(request.POST, fundraiser=fundraiser)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.fundraiser = fundraiser
+            comment.owner = None if request.user.is_anonymous else request.user
+            comment.save()
         return redirect('fundraiser_detail', pk=fundraiser_id)
 
 
@@ -88,4 +95,16 @@ class FundraiserVoteView(View):
             fundraiser.upvote()
         elif request.POST['vote'] == 'down':
             fundraiser.downvote()
+        return redirect('fundraiser_detail', pk=fundraiser_id)
+
+
+class TransactionAddView(View):
+    def post(self, request, fundraiser_id):
+        fundraiser = get_object_or_404(Fundraiser, pk=fundraiser_id)
+        form = TransactionForm(request.POST, fundraiser=fundraiser)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.fundraiser = fundraiser
+            transaction.owner = None if request.user.is_anonymous else request.user
+            transaction.save()
         return redirect('fundraiser_detail', pk=fundraiser_id)
