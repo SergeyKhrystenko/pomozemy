@@ -294,6 +294,8 @@ class TestFundraiserVote:
         response = client.post(reverse('fundraiser_vote', kwargs={'fundraiser_id': fundraiser.id}), data)
         assert response.status_code == 302
         assert response.url.startswith(reverse('fundraiser_detail', kwargs={'pk': fundraiser.id}))
+
+        fundraiser.refresh_from_db()
         assert fundraiser.votes_positive == 1
         assert fundraiser.votes_negative == 0
 
@@ -305,6 +307,8 @@ class TestFundraiserVote:
         response = client.post(reverse('fundraiser_vote', kwargs={'fundraiser_id': fundraiser.id}), data)
         assert response.status_code == 302
         assert response.url.startswith(reverse('fundraiser_detail', kwargs={'pk': fundraiser.id}))
+
+        fundraiser.refresh_from_db()
         assert fundraiser.votes_positive == 0
         assert fundraiser.votes_negative == 1
 
@@ -316,5 +320,7 @@ class TestFundraiserVote:
         response = client.post(reverse('fundraiser_vote', kwargs={'fundraiser_id': fundraiser.id}), data)
         assert response.status_code == 302
         assert response.url.startswith(reverse('fundraiser_detail', kwargs={'pk': fundraiser.id}))
+
+        fundraiser.refresh_from_db()
         assert fundraiser.votes_negative == 0
         assert fundraiser.votes_positive == 0
