@@ -26,9 +26,9 @@ class FundraiserForm(BaseModelForm):
 
 class CommentAddForm(BaseModelForm):
     def __init__(self, *args, **kwargs):
-        fundraiser = kwargs.pop('fundraiser')
+        self.fundraiser = kwargs.pop('fundraiser')
         super().__init__(*args, **kwargs)
-        self.helper.form_action = reverse_lazy('fundraiser_comment_add', kwargs={'fundraiser_id': fundraiser.pk})
+        self.helper.form_action = reverse_lazy('fundraiser_comment_add', kwargs={'fundraiser_id': self.fundraiser.pk})
 
     class Meta:
         model = Comment

@@ -1,13 +1,14 @@
+from datetime import datetime
+
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.timezone import make_aware
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from datetime import datetime
 from django.views import View
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
-from fundraisers.models import Fundraiser, Category
 from fundraisers.forms import FundraiserForm, CommentAddForm, TransactionForm
+from fundraisers.models import Fundraiser, Category
 
 
 class BaseFundraiserListView(ListView):
@@ -18,7 +19,8 @@ class BaseFundraiserListView(ListView):
 
 class FundraiserListView(BaseFundraiserListView):
     def get_queryset(self):
-        return Fundraiser.objects.filter(
+        query_set = super().get_queryset()
+        return query_set.filter(
             active=True,
             start_date__lte=make_aware(datetime.now()),
             end_date__gte=make_aware(datetime.now()),
@@ -27,14 +29,16 @@ class FundraiserListView(BaseFundraiserListView):
 
 class FundraiserMyListView(LoginRequiredMixin, BaseFundraiserListView):
     def get_queryset(self):
-        return Fundraiser.objects.filter(
+        query_set = super().get_queryset()
+        return query_set.filter(
             owner=self.request.user,
         )
 
 
 class FundraiserCategoryListView(BaseFundraiserListView):
     def get_queryset(self):
-        return Fundraiser.objects.filter(
+        query_set = super().get_queryset()
+        return query_set.filter(
             category=get_object_or_404(Category, slug=self.kwargs['slug']),
             active=True,
             start_date__lte=make_aware(datetime.now()),
@@ -90,7 +94,7 @@ class CommentAddView(View):
 
 class FundraiserVoteView(View):
     def post(self, request, fundraiser_id):
-        fundraiser = Fundraiser.objects.get(pk=fundraiser_id)
+        fundraiser = get_object_or_404(Fundraiser, pk=fundraiser_id)
         if request.POST['vote'] == 'up':
             fundraiser.upvote()
         elif request.POST['vote'] == 'down':
