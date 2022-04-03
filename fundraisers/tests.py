@@ -209,7 +209,7 @@ class TestFundraiserUpdateView:
         }
         response = client.post(reverse('fundraiser_update', kwargs={'pk': my_fundraiser.id}), data)
         assert response.status_code == 200
-        assert response.context['form'].errors['end_date'] == ['To pole jest wymagane.']
+        assert response.context['form'].errors['end_date'] == ['This field is required.']
         assert Fundraiser.objects.filter(**data).count() == 0
 
 
@@ -396,3 +396,14 @@ class TestFundraiserTransactionAddView:
         assert transaction.comment == data['comment']
         assert transaction.amount == 100.00
         assert transaction.user == user
+
+    def test__logged__post__invalid(self, client: Client, fundraisers, users):
+        user = users[0]
+        fundraiser = fundraisers[0]
+        client.force_login(user)
+        response = client.post(reverse('fundraiser_transaction_add', kwargs={'fundraiser_id': fundraiser.id}), {})
+        assert response.status_code == 302
+        assert response.url.startswith(reverse('fundraiser_detail', kwargs={'pk': fundraiser.id}))
+
+        fundraiser.refresh_from_db()
+        assert fundraiser.transaction_set.count() == 0
