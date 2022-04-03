@@ -1,7 +1,6 @@
 import pytest
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
-from random import randint
 
 from django.utils.timezone import make_aware
 
@@ -11,7 +10,7 @@ from fundraisers.models import Fundraiser, Category
 @pytest.fixture
 def users():
     lst = []
-    for i in range(5):
+    for i in range(10):
         lst.append(
             User.objects.create_user(username=f'test{i}', password='123456')
         )
@@ -38,7 +37,7 @@ def fundraisers(users, categories):
             Fundraiser.objects.create(
                 name=i,
                 description=f'Test description {i}',
-                owner=users[randint(0, len(users)-1)],
+                owner=users[i],
                 purpose=100,
                 active=True,
                 start_date=make_aware(datetime.now()),

@@ -11,13 +11,13 @@ from fundraisers.forms import FundraiserForm, CommentAddForm, TransactionForm
 from fundraisers.models import Fundraiser, Category
 
 
-class BaseFundraiserListView(ListView):
+class BaseList(ListView):
     model = Fundraiser
     template_name = 'fundraiser/fundraiser_list.html'
     ordering = ['-pk']
 
 
-class FundraiserListView(BaseFundraiserListView):
+class List(BaseList):
     def get_queryset(self):
         query_set = super().get_queryset()
         return query_set.filter(
@@ -27,7 +27,7 @@ class FundraiserListView(BaseFundraiserListView):
         )
 
 
-class FundraiserMyListView(LoginRequiredMixin, BaseFundraiserListView):
+class MyList(LoginRequiredMixin, BaseList):
     def get_queryset(self):
         query_set = super().get_queryset()
         return query_set.filter(
@@ -35,7 +35,7 @@ class FundraiserMyListView(LoginRequiredMixin, BaseFundraiserListView):
         )
 
 
-class FundraiserCategoryListView(BaseFundraiserListView):
+class CategoryList(BaseList):
     def get_queryset(self):
         query_set = super().get_queryset()
         return query_set.filter(
@@ -46,7 +46,7 @@ class FundraiserCategoryListView(BaseFundraiserListView):
         )
 
 
-class FundraiserDetailView(DetailView):
+class Detail(DetailView):
     model = Fundraiser
     template_name = 'fundraiser/fundraiser_detail.html'
 
@@ -57,7 +57,7 @@ class FundraiserDetailView(DetailView):
         return context
 
 
-class FundraiserCreateView(LoginRequiredMixin, CreateView):
+class Create(LoginRequiredMixin, CreateView):
     model = Fundraiser
     form_class = FundraiserForm
     template_name = 'form.html'
@@ -68,7 +68,7 @@ class FundraiserCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class FundraiserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class Update(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Fundraiser
     form_class = FundraiserForm
     template_name = 'form.html'
@@ -80,35 +80,11 @@ class FundraiserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return reverse_lazy('fundraiser_update', args=[self.object.pk])
 
 
-class CommentAddView(View):
-    def post(self, request, fundraiser_id):
-        fundraiser = get_object_or_404(Fundraiser, pk=fundraiser_id)
-        form = CommentAddForm(request.POST, fundraiser=fundraiser)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.fundraiser = fundraiser
-            comment.owner = None if request.user.is_anonymous else request.user
-            comment.save()
-        return redirect('fundraiser_detail', pk=fundraiser_id)
-
-
-class FundraiserVoteView(View):
+class Vote(View):
     def post(self, request, fundraiser_id):
         fundraiser = get_object_or_404(Fundraiser, pk=fundraiser_id)
         if request.POST['vote'] == 'up':
             fundraiser.upvote()
         elif request.POST['vote'] == 'down':
             fundraiser.downvote()
-        return redirect('fundraiser_detail', pk=fundraiser_id)
-
-
-class TransactionAddView(View):
-    def post(self, request, fundraiser_id):
-        fundraiser = get_object_or_404(Fundraiser, pk=fundraiser_id)
-        form = TransactionForm(request.POST, fundraiser=fundraiser)
-        if form.is_valid():
-            transaction = form.save(commit=False)
-            transaction.fundraiser = fundraiser
-            transaction.owner = None if request.user.is_anonymous else request.user
-            transaction.save()
         return redirect('fundraiser_detail', pk=fundraiser_id)

@@ -243,9 +243,11 @@ class TestFundraiserCommentAddView:
         response = client.post(reverse('fundraiser_comment_add', kwargs={'fundraiser_id': fundraiser.id}), data)
         assert response.status_code == 302
         assert response.url.startswith(reverse('fundraiser_detail', kwargs={'pk': fundraiser.id}))
-        assert Comment.objects.filter(**data).count() == 1
-        comment = Comment.objects.get(**data)
-        assert comment.fundraiser == fundraiser
+
+        fundraiser.refresh_from_db()
+        assert fundraiser.comment_set.count() == 1
+        comment = fundraiser.comment_set.first()
+        assert comment.message == data['message']
         assert comment.user is None
 
     def test__not_logged__post__invalid(self, client: Client, fundraisers):
@@ -257,17 +259,19 @@ class TestFundraiserCommentAddView:
 
     def test__logged__post__valid(self, client: Client, fundraisers, users):
         user = users[0]
-        client.force_login(user)
         fundraiser = fundraisers[0]
+        client.force_login(user)
         data = {
             'message': 'Test message',
         }
         response = client.post(reverse('fundraiser_comment_add', kwargs={'fundraiser_id': fundraiser.id}), data)
         assert response.status_code == 302
         assert response.url.startswith(reverse('fundraiser_detail', kwargs={'pk': fundraiser.id}))
-        assert Comment.objects.filter(**data).count() == 1
-        comment = Comment.objects.get(**data)
-        assert comment.fundraiser == fundraiser
+
+        fundraiser.refresh_from_db()
+        assert fundraiser.comment_set.count() == 1
+        comment = fundraiser.comment_set.first()
+        assert comment.message == data['message']
         assert comment.user == user
 
 
@@ -324,3 +328,71 @@ class TestFundraiserVote:
         fundraiser.refresh_from_db()
         assert fundraiser.votes_negative == 0
         assert fundraiser.votes_positive == 0
+
+
+@pytest.mark.django_db
+class TestFundraiserTransactionAddView:
+    def test__not_existing_fundraiser__get(self, client: Client):
+        response = client.get(reverse('fundraiser_transaction_add', kwargs={'fundraiser_id': 768}))
+        assert response.status_code == 405
+
+    def test__not_existing_fundraiser__post(self, client: Client):
+        response = client.post(reverse('fundraiser_transaction_add', kwargs={'fundraiser_id': 768}))
+        assert response.status_code == 404
+
+    def test__existing_fundraiser__get(self, client: Client, fundraisers):
+        fundraiser = fundraisers[0]
+        response = client.get(reverse('fundraiser_transaction_add', kwargs={'fundraiser_id': fundraiser.id}))
+        assert response.status_code == 405
+
+    def test__comment_form__shown(self, client: Client, fundraisers):
+        fundraiser = fundraisers[0]
+        client.force_login(fundraiser.owner)
+        response = client.get(reverse('fundraiser_detail', kwargs={'pk': fundraiser.id}))
+        assert response.status_code == 200
+        assert response.context['transaction_form'].fundraiser == fundraiser
+
+    def test__not_logged__post__valid(self, client: Client, fundraisers):
+        fundraiser = fundraisers[0]
+        data = {
+            'amount': '100',
+            'comment': 'Test comment',
+        }
+        response = client.post(reverse('fundraiser_transaction_add', kwargs={'fundraiser_id': fundraiser.id}), data)
+        assert response.status_code == 302
+        assert response.url.startswith(reverse('fundraiser_detail', kwargs={'pk': fundraiser.id}))
+
+        fundraiser.refresh_from_db()
+        assert fundraiser.transaction_set.count() == 1
+        transaction = fundraiser.transaction_set.first()
+        assert transaction.comment == data['comment']
+        assert transaction.amount == 100.00
+        assert transaction.user is None
+
+    def test__not_logged__post__invalid(self, client: Client, fundraisers):
+        fundraiser = fundraisers[0]
+        response = client.post(reverse('fundraiser_transaction_add', kwargs={'fundraiser_id': fundraiser.id}), {})
+        assert response.status_code == 302
+        assert response.url.startswith(reverse('fundraiser_detail', kwargs={'pk': fundraiser.id}))
+
+        fundraiser.refresh_from_db()
+        assert fundraiser.transaction_set.count() == 0
+
+    def test__logged__post__valid(self, client: Client, fundraisers, users):
+        user = users[0]
+        fundraiser = fundraisers[0]
+        client.force_login(user)
+        data = {
+            'amount': '100',
+            'comment': 'Test comment',
+        }
+        response = client.post(reverse('fundraiser_transaction_add', kwargs={'fundraiser_id': fundraiser.id}), data)
+        assert response.status_code == 302
+        assert response.url.startswith(reverse('fundraiser_detail', kwargs={'pk': fundraiser.id}))
+
+        fundraiser.refresh_from_db()
+        assert fundraiser.transaction_set.count() == 1
+        transaction = fundraiser.transaction_set.first()
+        assert transaction.comment == data['comment']
+        assert transaction.amount == 100.00
+        assert transaction.user == user
