@@ -1,0 +1,112 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-03 13:23+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
+"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
+"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: forms.py:15
+msgid "Submit"
+msgstr "Wyślij"
+
+#: models.py:10 models.py:24
+msgid "Name"
+msgstr "Nazwa"
+
+#: models.py:26 templates/fundraiser/fundraiser_detail.html:35
+msgid "Description"
+msgstr "Opis"
+
+#: models.py:27
+msgid "Purpose"
+msgstr "Cel"
+
+#: models.py:28
+msgid "Active"
+msgstr "Aktywny"
+
+#: models.py:29 templates/fundraiser/fundraiser_detail.html:8
+msgid "Category"
+msgstr "Kategoria"
+
+#: models.py:31
+msgid "Start Date"
+msgstr "Aktywny od"
+
+#: models.py:32
+msgid "End Date"
+msgstr "Aktywny do"
+
+#: models.py:59
+msgid "Comment"
+msgstr "Komentarz"
+
+#: models.py:60 templates/fundraiser/fundraiser_detail.html:58
+msgid "Amount"
+msgstr "Kwota"
+
+#: models.py:72
+msgid "Message"
+msgstr "Wiadomość"
+
+#: templates/fundraiser/fundraiser_detail.html:9
+msgid "Author"
+msgstr "Autor"
+
+#: templates/fundraiser/fundraiser_detail.html:10
+#: templates/fundraiser/fundraiser_list.html:22
+msgid "Collected"
+msgstr "Zebrano"
+
+#: templates/fundraiser/fundraiser_detail.html:11
+msgid "Votes"
+msgstr "Głosy"
+
+#: templates/fundraiser/fundraiser_detail.html:39
+msgid "Transactions"
+msgstr "Transakcje"
+
+#: templates/fundraiser/fundraiser_detail.html:74
+#, fuzzy
+#| msgid "Comment"
+msgid "Comments"
+msgstr "Komentarz"
+
+#: templates/fundraiser/fundraiser_list.html:3
+msgid "Fundraisers"
+msgstr "Zbiórki"
+
+#: templates/fundraiser/fundraiser_list.html:7
+msgid "Add"
+msgstr "Dodaj"
+
+#: templates/fundraiser/fundraiser_list.html:10
+msgid "Log in to be able to add fundraisers."
+msgstr "Zaloguj się, aby móc dodawać zbiórki."
+
+#: templates/fundraiser/fundraiser_list.html:28
+msgid "Show more"
+msgstr "Pokaż więcej"
+
+#: templates/fundraiser/fundraiser_list.html:30
+msgid "Edit"
+msgstr "Edytuj"
+
+#: templates/fundraiser/fundraiser_list.html:36
+msgid "No fundraisers."
+msgstr "Brak zbiórek."

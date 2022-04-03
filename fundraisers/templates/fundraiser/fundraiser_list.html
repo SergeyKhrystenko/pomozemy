@@ -1,13 +1,13 @@
 {% extends '__base__.html' %}
 {% load i18n %}
-{% block title %}Zbiórki{% endblock %}
+{% block title %}{% translate 'Fundraisers' %}{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
         <div class="row m-4">
-            <a class="btn btn-success" href="{% url 'fundraiser_create' %}">Dodaj</a>
+            <a class="btn btn-success" href="{% url 'fundraiser_create' %}">{% translate 'Add' %}</a>
         </div>
     {% else %}
-        Zaloguj się, aby móc dodawać zbiórki.
+        {% translate 'Log in to be able to add fundraisers.' %}
     {% endif %}
     <div class="row">
         {% for object in object_list %}
@@ -19,21 +19,21 @@
                             {{ object.name }}
                         </h5>
                         <p class="card-text">
-                            Zebrano {{ object.transaction_sum }}zł z {{ object.purpose }}zł<br>
+                            {% translate 'Collected' %} {{ object.transaction_sum }}zł / {{ object.purpose }}zł<br>
                             <span class="badge bg-info"><i class="bi bi-person-circle"></i> {{ object.owner.first_name }} {{ object.owner.last_name }}</span><br>
                             <span class="badge bg-info"><i class="bi bi-chat-quote-fill"></i> {{ object.comment_set.count }}</span>
                             <span class="badge bg-success"><i class="bi bi-emoji-laughing-fill"></i> {{ object.votes_positive }}</span>
                             <span class="badge bg-danger"><i class="bi bi-emoji-frown-fill"></i> {{ object.votes_negative }}</span>
                         </p>
-                        <a href="{% url 'fundraiser_detail' object.pk %}" class="btn btn-primary">Pokaż więcej</a>
+                        <a href="{% url 'fundraiser_detail' object.pk %}" class="btn btn-primary">{% translate 'Show more' %}</a>
                         {% if user.pk == object.owner.pk %}
-                            <a href="{% url 'fundraiser_update' object.pk %}" class="btn btn-primary">Edytuj</a>
+                            <a href="{% url 'fundraiser_update' object.pk %}" class="btn btn-primary">{% translate 'Edit' %}</a>
                         {% endif %}
                     </div>
                 </div>
             </div>
         {% empty %}
-            Brak zbiórek.
+            {% translate 'No fundraisers.' %}
         {% endfor %}
     </div>
 {% endblock %}

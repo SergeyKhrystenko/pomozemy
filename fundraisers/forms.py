@@ -2,6 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
 from fundraisers.models import Fundraiser, Comment, Transaction
 
@@ -11,7 +12,7 @@ class BaseModelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.add_input(Submit('submit', _('Submit')))
 
 
 class FundraiserForm(BaseModelForm):

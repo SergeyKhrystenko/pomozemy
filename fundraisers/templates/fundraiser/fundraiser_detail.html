@@ -1,13 +1,14 @@
 {% extends '__base__.html' %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 {% block title %}{{ object.name }}{% endblock %}
 {% block content %}
     <div class="row my-4">
         <h1>{{ object.name }}</h1>
-        <div class="row">Kategoria: {{ object.category.name }}</div>
-        <div class="row">Autor: {{ object.owner.first_name }} {{ object.owner.last_name }}</div>
-        <div class="row">Zebrano: {{ object.transaction_sum }}zł / {{ object.purpose }}zł</div>
-        <div class="row">Głosy:
+        <div class="row">{% translate 'Category' %}: {{ object.category.name }}</div>
+        <div class="row">{% translate 'Author' %}: {{ object.owner.first_name }} {{ object.owner.last_name }}</div>
+        <div class="row">{% translate 'Collected' %}: {{ object.transaction_sum }}zł / {{ object.purpose }}zł</div>
+        <div class="row">{% translate 'Votes' %}:
             <div class="row">
                 <div class="col-1">
                     <form action="{% url 'fundraiser_vote' object.id %}" method="post" class="form-inline">
@@ -31,11 +32,11 @@
                 </div>
             </div>
         </div>
-        <div class="row">Opis: {{ object.description|safe }}</div>
+        <div class="row">{% translate 'Description' %}: {{ object.description|safe }}</div>
 
         <div class="card text-dark">
             <div class="card-body p-4">
-                <h4 class="mb-0">Transakcje</h4>
+                <h4 class="mb-0">{% translate 'Transactions' %}</h4>
             </div>
             <div class="card-body p-4">
                 {% crispy transaction_form %}
@@ -54,7 +55,7 @@
                                 </p>
                             </div>
                             <p class="mb-0">
-                                Amount: {{ transaction.amount }}zł<br>
+                                {% translate 'Amount' %}: {{ transaction.amount }}zł<br>
                                 {{ transaction.comment }}
                             </p>
                         </div>
@@ -70,7 +71,7 @@
 
         <div class="card text-dark">
             <div class="card-body p-4">
-                <h4 class="mb-0">Komentarze</h4>
+                <h4 class="mb-0">{% translate 'Comments' %}</h4>
             </div>
             <div class="card-body p-4">
                 {% crispy comment_form %}
